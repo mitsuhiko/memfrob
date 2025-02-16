@@ -1,0 +1,201 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>memfrob(3)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sometype+Mono:ital,wght@0,400..700;1,400..700&display=swap"
+  rel="stylesheet">
+<style>
+  :root {
+    --primary: #e0a7d9;
+    --text-color: #320423;
+    --textarea-background-color: #f0e0eb;
+    --background-color: #efd6ec;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    font-family: "Sometype Mono", monospace;
+    font-size: 18px;
+  }
+
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background: var(--background-color);
+    color: var(--text-color);
+  }
+
+  button {
+    padding: 10px 20px;
+    margin: 8px 6px;
+    color: var(--text-color);
+    background: linear-gradient(to bottom, var(--primary), var(--primary));
+    border: 1px solid var(--primary);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.07s ease;
+    box-shadow: 0px 6px 0 0 rgba(0, 0, 0, 0.7);
+  }
+
+  button:hover {
+    transform: translateY(2px);
+    background: linear-gradient(to bottom, var(--primary), var(--primary));
+    box-shadow: 0px 4px 0 0 rgba(0, 0, 0, 0.7);
+  }
+
+  button.pressed,
+  button.pressed:hover {
+    transform: translateY(5px);
+    box-shadow: 0px 1px 0 0 rgba(0, 0, 0, 0.8);
+  }
+
+  textarea {
+    width: 500px;
+    height: 200px;
+    border: 1px solid var(--primary);
+    padding: 8px;
+    border-radius: 5px;
+    background-color: var(--textarea-background-color);
+  }
+
+  h1 {
+    font-size: 48px;
+  }
+
+  main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  main > * {
+    transition: all 0.1s ease;
+  }
+
+  footer {
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+    padding: 8px 12px;
+    background-color: var(--text-color);
+    color: var(--primary);
+    border-radius: 5px;
+
+    a {
+      color: var(--primary);
+    }
+
+    a:hover {
+      color: var(--textarea-background-color);
+    }
+  }
+</style>
+<script>
+  function memfrob(str) {
+    return str.split('').map(c => String.fromCharCode(c.charCodeAt(0) ^ 42)).join('');
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const upSound = new Audio('up.m4a');
+    const downSound = new Audio('down.m4a');
+    const buttons = document.querySelectorAll('button')
+    buttons.forEach((button) => {
+      function delayRelease() {
+        const pressedTime = Date.now();
+        const mouseDownTime = button.dataset.mouseDownTime || pressedTime;
+        const timeSinceMouseDown = pressedTime - mouseDownTime;
+        const remainingTime = Math.max(0, 100 - timeSinceMouseDown);
+        setTimeout(() => {
+          const stillDown = button.classList.contains('pressed');
+          button.classList.remove('pressed');
+          if (stillDown) {
+            upSound.currentTime = 0;
+            upSound.play();
+          }
+        }, remainingTime);
+      }
+
+      button.addEventListener('mousedown', () => {
+        downSound.currentTime = 0;
+        downSound.play();
+        button.classList.add('pressed');
+        button.dataset.mouseDownTime = Date.now();
+      });
+      button.addEventListener('mouseup', () => {
+        button.classList.add('pressed');
+        delayRelease();
+      });
+      button.addEventListener('mouseleave', () => {
+        delayRelease();
+      });
+    });
+
+    const input = document.getElementById('input');
+    const frob = document.getElementById('frob');
+    frob.addEventListener('click', (event) => {
+      input.value = memfrob(input.value);
+    });
+
+    const bop = document.getElementById('bop');
+    let isBopping = false;
+    let animationFrameId;
+    const music = new Audio('bop.mp3');
+    music.currentTime = 0.6;
+    music.loop = true;
+    const boppingElements = document.querySelectorAll('main > *');
+
+    function bopElements() {
+      boppingElements.forEach(el => {
+        const xOffset = (Math.random() - 0.5) * 20;
+        const yOffset = (Math.random() - 0.5) * 20;
+        const rotation = (Math.random() - 0.5) * 10;
+        el.style.transform = `translate(${xOffset}px, ${yOffset}px) rotate(${rotation}deg)`;
+      });
+      
+      if (isBopping) {
+        music.play();
+        document.querySelector('footer').hidden = false;
+        animationFrameId = setTimeout(bopElements, 100);
+      } else {
+        music.pause();
+        document.querySelector('footer').hidden = true;
+        boppingElements.forEach(el => {
+          el.style.transform = 'none';
+        });
+      }
+    }
+
+    bop.addEventListener('click', () => {
+      isBopping = !isBopping;
+      if (isBopping) {
+        bopElements();
+      } else {
+        cancelAnimationFrame(animationFrameId);
+        boppingElements.forEach(el => {
+          el.style.transform = 'none';
+        });
+      }
+    });
+  });
+</script>
+<main>
+<h1>memfrob</h1>
+<textarea id="input">oFOZBKD^Y
+KXO
+ZCDA</textarea>
+<div>
+  <button id="frob">Frob</button>
+  <button id="bop">Bop!</button>
+</div>
+</main>
+<footer hidden>
+  <strong>Music credits:</strong>
+  Super Sonic by <a href="https://soundcloud.com/beat-mekanik">Beat Mekanik</a>
+  (<a href="https://creativecommons.org/licenses/by/4.0/">License</a>)
+</footer>
