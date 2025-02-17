@@ -1,6 +1,7 @@
 <!doctype html>
 <meta charset="utf-8">
 <title>memfrob(3)</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sometype+Mono:ital,wght@0,400..700;1,400..700&display=swap"
@@ -40,6 +41,7 @@
     cursor: pointer;
     transition: all 0.07s ease;
     box-shadow: 0px 6px 0 0 rgba(0, 0, 0, 0.7);
+    touch-action: manipulation;
   }
 
   button:hover {
@@ -121,17 +123,17 @@
         }, remainingTime);
       }
 
-      button.addEventListener('mousedown', () => {
+      button.addEventListener('pointerdown', (evt) => {
         downSound.currentTime = 0;
         downSound.play();
         button.classList.add('pressed');
         button.dataset.mouseDownTime = Date.now();
       });
-      button.addEventListener('mouseup', () => {
+      button.addEventListener('pointerup', (evt) => {
         button.classList.add('pressed');
         delayRelease();
       });
-      button.addEventListener('mouseleave', () => {
+      button.addEventListener('pointerleave', () => {
         delayRelease();
       });
     });
