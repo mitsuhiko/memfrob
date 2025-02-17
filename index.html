@@ -42,6 +42,10 @@
     transition: all 0.07s ease;
     box-shadow: 0px 6px 0 0 rgba(0, 0, 0, 0.7);
     touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
   }
 
   button:hover {
@@ -106,7 +110,8 @@
   document.addEventListener('DOMContentLoaded', () => {
     const upSound = new Audio('up.m4a');
     const downSound = new Audio('down.m4a');
-    const buttons = document.querySelectorAll('button')
+    const buttons = document.querySelectorAll('button');
+
     buttons.forEach((button) => {
       function delayRelease() {
         const pressedTime = Date.now();
@@ -150,6 +155,7 @@
     const music = new Audio('bop.mp3');
     music.currentTime = 0.6;
     music.loop = true;
+    music.load();
     const boppingElements = document.querySelectorAll('main > *');
 
     function bopElements() {
