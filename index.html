@@ -31,9 +31,15 @@
     color: var(--text-color);
   }
 
+  div.button-row {
+    display: flex;
+    gap: 0;
+    justify-content: center;
+  }
+
   button {
     padding: 10px 20px;
-    margin: 8px 6px;
+    margin: 8px 4px;
     color: var(--text-color);
     background: linear-gradient(to bottom, var(--primary), var(--primary));
     border: 1px solid var(--primary);
@@ -84,6 +90,26 @@
     transition: all 0.1s ease;
   }
 
+  dialog {
+    padding: 16px 24px;
+    background-color: var(--text-color);
+    color: var(--primary);
+    border-radius: 5px;
+    font-size: 13px;
+    line-height: 1.2;
+    border: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+  }
+
+  dialog::backdrop {
+    background: rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+  }
+
   footer {
     position: fixed;
     bottom: 16px;
@@ -111,6 +137,8 @@
     const upSound = new Audio('up.m4a');
     const downSound = new Audio('down.m4a');
     const buttons = document.querySelectorAll('button');
+    upSound.load();
+    downSound.load();
 
     buttons.forEach((button) => {
       function delayRelease() {
@@ -190,6 +218,23 @@
         });
       }
     });
+
+    const woot = document.getElementById('woot');
+    const dialog = document.querySelector('dialog');
+    woot.addEventListener('click', () => {
+      dialog.showModal();
+    });
+    dialog.addEventListener('click', (e) => {
+      const dialogDimensions = dialog.getBoundingClientRect();
+      if (
+        e.clientX < dialogDimensions.left ||
+        e.clientX > dialogDimensions.right ||
+        e.clientY < dialogDimensions.top ||
+        e.clientY > dialogDimensions.bottom
+      ) {
+        dialog.close();
+      }
+    });
   });
 </script>
 <main>
@@ -197,11 +242,54 @@
 <textarea id="input">oFOZBKD^Y
 KXO
 ZCDA</textarea>
-<div>
+<div class="button-row">
   <button id="frob">Frob</button>
   <button id="bop">Bop!</button>
+  <button id="woot">Woot?</button>
 </div>
 </main>
+<dialog>
+<pre><strong>memfrob(3)                 Library Functions Manual                 memfrob(3)</strong>
+
+<strong>NAME</strong>
+        <em>memfrob</em> - frobnicate (obfuscate) a memory area
+
+<strong>LIBRARY</strong>
+        <em>Standard C library</em> (<code>libc</code>, <code>-lc</code>)
+
+<strong>SYNOPSIS</strong>
+        <code>#define _GNU_SOURCE</code>             /* See feature_test_macros(7) */
+        <code>#include &lt;string.h&gt;</code>
+
+        <code>void *memfrob(void s[.n], size_t n);</code>
+
+<strong>DESCRIPTION</strong>
+        The <code>memfrob()</code> function obfuscates the first <em>n</em> bytes of the memory area
+        <em>s</em> by exclusive-ORing each character with the number 42.  The effect can
+        be reversed by using <code>memfrob()</code> on the obfuscated memory area.
+
+        <strong>Note</strong> that this function is not a proper encryption routine as the XOR
+        constant is fixed, and is suitable only for hiding strings.
+
+<strong>RETURN VALUE</strong>
+        The <code>memfrob()</code> function returns a pointer to the obfuscated memory area.
+
+<strong>ATTRIBUTES</strong>
+        For an explanation of the terms used in this section, see
+        <em>attributes(7)</em>.
+
+        +--------------------------------------------+---------------+---------+
+        |Interface                                   | Attribute     | Value   |
+        +--------------------------------------------+---------------+---------+
+        |<code>memfrob()</code>                                   | Thread safety | MT-Safe |
+        +--------------------------------------------+---------------+---------+
+
+<strong>STANDARDS</strong>
+        GNU.
+
+<strong>SEE ALSO</strong>
+        <em>bstring(3)</em>, <em>strfry(3)</em></pre>
+</dialog>
 <footer hidden>
   <strong>Music credits:</strong>
   Super Sonic by <a href="https://soundcloud.com/beat-mekanik">Beat Mekanik</a>
